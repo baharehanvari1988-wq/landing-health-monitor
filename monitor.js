@@ -137,8 +137,6 @@ async function sendSlackAlert(status, values, overall) {
 // This script just reads whatever is named %Bounce/%Starter/%ODP/%Paid in
 // the insight — it doesn't care about A/B/C/D labels itself.
 async function main() {
-  const result = await fetchTrendInsight();
-async function main() {
   console.log("ENV CHECK:", {
     POSTHOG_HOST: !!ENV.POSTHOG_HOST,
     POSTHOG_PROJECT_ID: !!ENV.POSTHOG_PROJECT_ID,
@@ -148,6 +146,7 @@ async function main() {
   });
 
   const result = await fetchTrendInsight();
+
   const values = {
     bounce: yesterdayValue(result, KPI_CONFIG.bounce.label),
     starter: yesterdayValue(result, KPI_CONFIG.starter.label),
