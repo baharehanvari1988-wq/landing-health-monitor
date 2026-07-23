@@ -1,0 +1,13 @@
+{
+  "name": "landing-health-monitor",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Daily landing page health monitor: PostHog -> thresholds -> Slack alert",
+  "main": "monitor.js",
+  "scripts": {
+    "start": "node monitor.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
