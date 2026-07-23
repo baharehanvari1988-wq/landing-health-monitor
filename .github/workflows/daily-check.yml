@@ -1,0 +1,37 @@
+name: Landing Health Daily Check
+
+on:
+  schedule:
+    - cron: "0 5 * * *"   # 05:00 UTC every day — adjust to your timezone
+  workflow_dispatch: {}    # lets you also run it manually from the Actions tab
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Run monitor
+        env:
+          POSTHOG_HOST: ${{ secrets.POSTHOG_HOST }}
+          POSTHOG_PROJECT_ID: ${{ secrets.POSTHOG_PROJECT_ID }}
+          POSTHOG_API_KEY: ${{ secrets.POSTHOG_API_KEY }}
+          POSTHOG_FUNNEL_SHORT_ID: ${{ secrets.POSTHOG_FUNNEL_SHORT_ID }}
+          POSTHOG_BOUNCE_SHORT_ID: ${{ secrets.POSTHOG_BOUNCE_SHORT_ID }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          HEALTHCHECK_URL: ${{ secrets.HEALTHCHECK_URL }}
+        run: node monitor.js
+
+      - name: Commit updated history
+        run: |
+          git config user.name "landing-health-bot"
+          git config user.email "actions@github.com"
+          git add data/history.csv
+          git diff --staged --quiet || git commit -m "Update landing health history"
+          git push
